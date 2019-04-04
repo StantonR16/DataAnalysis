@@ -1,3 +1,8 @@
+import java.text.*;
+
+// Date format used by IG
+static final SimpleDateFormat g_format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
 public class MediaObject {
 
   private String m_name, m_date;
@@ -20,23 +25,34 @@ public class MediaObject {
   public String getName() { return m_name;}
   
   // Format: 2019-03-17T16:02:37
-  public String getDate() {return m_date;}
+  public String getDateString() {return m_date;}
   
   
-  private int parseSplitIndex(int i) {
-    return Integer.parseInt(m_date.split("-")[i]);
+  public Date getDate() {
+    try {
+     return g_format.parse(m_date);
+    } catch (Exception x) {
+      return null;
+    }
+   
+  }
+}
+
+
+// This is why I hate Java
+
+List<MediaObject> deserializePhotos(JSONObject obj, String key) {
+  JSONArray rg = obj.getJSONArray(key);
+  List<MediaObject> media = new ArrayList<MediaObject>(rg.size());
+  
+  for (int i = 0; i < rg.size(); i++) {
+    Photo m = new Photo();
+    m.initPhoto(rg.getJSONObject(i));
+    media.add(m);
   }
   
-  public int year() {
-    return parseSplitIndex(0);
-  }
+  return media;
   
-  public int month() {
-    return parseSplitIndex(1);
-  }
-  public int day() {
-    return parseSplitIndex(2);
-  }
 }
 
 List<MediaObject> deserializeLikes(JSONObject obj, String key) {

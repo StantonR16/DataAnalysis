@@ -1,10 +1,13 @@
 class Photo extends MediaObject {
   private String m_caption, m_path;
   
-  @Override
-  public void init(JSONArray rg) {
-    m_caption = rg.getString(0);
-    setDateInternal(rg.getString(1));
-    m_path = rg.getString(2);
+  public void initPhoto(JSONObject r) {
+    m_caption = r.getString("caption");
+    m_path = r.getString("path");
+    setDateInternal(r.getString("taken_at"));
+  }
+  
+  public String toString() {
+    return super.toString() + ": " + m_caption;
   }
 }

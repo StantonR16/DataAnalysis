@@ -4,53 +4,63 @@ class Profile {
   private final List<MediaObject> m_comments;
   private final List<MediaObject> m_photos;
 
-  public Profile(String root) {
-    JSONObject commentsObj = loadJSONObject(root+"/comments.json");
+  public Profile() {
+    JSONObject commentsObj = loadJSONObject("p1"+"/comments.json");
     m_comments = deserializeComments(commentsObj, "media_comments");
 
-    JSONObject likesObj = loadJSONObject(root+"/likes.json");
+    JSONObject likesObj = loadJSONObject("p1"+"/likes.json");
     m_likes = deserializeLikes(likesObj, "media_likes");
     
-    m_photos = null;//todo
+    JSONObject photosObj = loadJSONObject("p2"+"/media.json");
+    m_photos = deserializePhotos(photosObj, "photos");
+  }
+  
+  public List<MediaObject> getPhotos() {
+    return m_photos;
+  }
+  
+  public List<MediaObject> getPhotos(Date d) {
+    return whereTimeIs(m_photos,d);
+  }
+  
+  public List<MediaObject> getComments() {
+    return m_comments;
+  }
+  public List<MediaObject> getComments(Date d) {
+    return whereTimeIs(m_comments,d);
+  }
+  public List<MediaObject> getLikes() {
+    return m_likes;
+  }
+  public List<MediaObject> getLikes(Date d) {
+    return whereTimeIs(m_likes,d);
+  }
+  
+  
+  
+  public Photo getPhoto(int i) {
+    return (Photo) m_photos.get(i);
   }
   
   public Comment getComment(int i) {
     return (Comment) m_comments.get(i);
   }
   
-  private List<MediaObject> whereTimeIs(List<MediaObject> list, TimeUnit t, int v) {
+  public MediaObject getLike(int i) {
+    return m_likes.get(i);
+  }
+  
+  private List<MediaObject> whereTimeIs(List<MediaObject> list, Date d) {
     List<MediaObject> listCpy = new ArrayList<MediaObject>();
     for (MediaObject m : list) {
       
-      int buf = -1;
-      switch (t) {
-        case YEAR:
-          buf = m.year();
-          break;
-          case MONTH:
-          buf = m.month();
-          break;
-          case DAY:
-          buf = m.day();
-          break;
-      }
-      if (buf == v) {
+      
+      if (m.getDate().equals(d)) {
         listCpy.add(m);
       }
     }
     return listCpy;
   }
   
-  public void printDataForDate(TimeUnit t, int v) {
-   List<MediaObject> c = whereTimeIs(m_comments, t,v);
-   List<MediaObject> l = whereTimeIs(m_likes, t,v);
-   
-   printf("Comments: %d",c.size());
-   printf("Likes: %d",l.size());
-   println();
-  }
-}
-
-enum TimeUnit {
-  YEAR, MONTH, DAY
+  
 }
