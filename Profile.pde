@@ -81,21 +81,24 @@ private List<MediaObject> whereTimeIs(List<MediaObject> list, Date d) {
       }
       
       if (u.equals("d")) {
-        if (m.getDate().getDay() == d.getDay()) {
+        Date md= m.getDate();
+        if (md.getDay() == d.getDay() && md.getYear() == d.getYear() && md.getMonth() == d.getMonth()) {
           listCpy.add(m);
         }
         
       }
       
       if (u.equals("y")) {
-          if (m.getDate().getYear() == d.getYear()) {
+          Date md= m.getDate();
+          if (md.getYear() == d.getYear()) {
             listCpy.add(m);
           }
           
         }
         
         if (u.equals("m")) {
-            if (m.getDate().getMonth() == d.getMonth()) {
+            Date md= m.getDate();
+            if (md.getMonth() == d.getMonth() && md.getYear() == md.getYear()) {
               listCpy.add(m);
             }
           }
