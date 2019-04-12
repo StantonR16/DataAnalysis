@@ -39,7 +39,7 @@ public class MediaObject {
 }
 
 
-// This is why I hate Java
+// This is so inefficient lol
 
 List<MediaObject> deserializePhotos(JSONObject obj, String key) {
   JSONArray rg = obj.getJSONArray(key);

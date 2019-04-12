@@ -2,13 +2,11 @@ import java.util.*;
 import java.lang.reflect.*;
 import java.time.*;
 
+
+
 Profile g_me;
 
 int g_mod = 10;
-
-int g_unitIndex = 0;
-String[] g_units = {"d", "m", "y", "a"};
-
 
 Date g_date;
 Date g_dateLim;
@@ -26,7 +24,12 @@ static final color PHOTO_CLR = #42DFF4;
 
 static final int DIM = 900;
 
-final static float SCALAR = .33f;
+static final float SCALAR = .33f;
+
+// Time units
+int g_unitIndex = 0;
+final Map<Integer,String> g_unitMap = new HashMap<Integer,String>();
+final Map<String,String> g_unitFullName = new HashMap<String,String>();
 
 void setup() {
 
@@ -48,6 +51,16 @@ void setup() {
 
   g_date = parse(DATE_START_SZ);
   g_dateLim = parse(DATE_LIM_SZ);
+  
+  g_unitMap.put(0,"d");
+  g_unitMap.put(1,"m");
+  g_unitMap.put(2,"y");
+  g_unitMap.put(3,"a");
+
+  g_unitFullName.put("d","day");
+  g_unitFullName.put("m","month");
+  g_unitFullName.put("y","year");
+  g_unitFullName.put("a","exact moment");
 
   frameRate(60);
 }
@@ -81,7 +94,7 @@ void draw() {
   if (frameCount % g_mod == 0) {
     g_date = addOneDay(g_date);
   }
-  
+
   List<MediaObject> c = null;
   List<MediaObject> l = null;
   List<MediaObject> p = null;
@@ -89,21 +102,16 @@ void draw() {
   fill(#FFFFFF);
 
   //text(g_sb.toString(), 100, 100);
-  text("Mode: "+g_units[g_unitIndex], 30, 100);
+  text("Mode: "+g_unitMap.get(g_unitIndex), 30, 100);
 
-  String unitStr = "INVALID";
-  String uBuf = g_units[g_unitIndex];
-
-  if (uBuf.equals("d")) unitStr = "day";
-  if (uBuf.equals("m")) unitStr = "month";
-  if (uBuf.equals("y")) unitStr = "year";
-  if (uBuf.equals("a")) unitStr = "exact moment";
+ 
+  String unitStr = g_unitFullName.get(g_unitMap.get(g_unitIndex));
 
   text(String.format("Data on the %s of %s", unitStr, g_date), 30, 50);
 
-  c = g_me.getComments(g_date, g_units[g_unitIndex]);
-  l = g_me.getLikes(g_date, g_units[g_unitIndex]);
-  p = g_me.getPhotos(g_date, g_units[g_unitIndex]);
+  c = g_me.getComments(g_date, g_unitMap.get(g_unitIndex));
+  l = g_me.getLikes(g_date, g_unitMap.get(g_unitIndex));
+  p = g_me.getPhotos(g_date, g_unitMap.get(g_unitIndex));
 
 
   g_commentCount.add(c.size());
@@ -111,25 +119,20 @@ void draw() {
   g_photoCount.add(p.size());
 
 
+  // I could make a class for this but whatever xd
 
+  final float C_DIM = DIM-c.size() * SCALAR;
+  final int C_OFS = 800 - (30);
+  graphBar(c.size(), COMMENT_CLR, C_OFS, C_DIM, "Comments", 200);
 
+  final float L_DIM = DIM-l.size() * SCALAR;
+  final int L_OFS = 800 - (30+45+20);
+  graphBar(l.size(), LIKE_CLR, L_OFS, L_DIM, "Likes", 215);
 
-  if (c != null && l != null && p != null) {
+  final float P_DIM = DIM-p.size() * SCALAR;
+  final int P_OFS = 800 - (30+45+20+45+20);
+  graphBar(p.size(), PHOTO_CLR, P_OFS, P_DIM, "Photos", 230);
 
-    // I could make a class for this but whatever xd
-
-    final float C_DIM = DIM-c.size() * SCALAR;
-    final int C_OFS = 800 - (30);
-    graphBar(c.size(), COMMENT_CLR, C_OFS, C_DIM, "Comments", 200);
-
-    final float L_DIM = DIM-l.size() * SCALAR;
-    final int L_OFS = 800 - (30+45+20);
-    graphBar(l.size(), LIKE_CLR, L_OFS, L_DIM, "Likes", 215);
-
-    final float P_DIM = DIM-p.size() * SCALAR;
-    final int P_OFS = 800 - (30+45+20+45+20);
-    graphBar(p.size(), PHOTO_CLR, P_OFS, P_DIM, "Photos", 230);
-  }
 
   lineGraph(g_commentCount, COMMENT_CLR, 300);
   lineGraph(g_likeCount, LIKE_CLR, 500);
@@ -170,7 +173,7 @@ void keyPressed() {
 
     assert false;
 
-    if (g_unitIndex + 1 >= g_units.length) {
+    if (!g_unitMap.containsKey(g_unitIndex + 1)) {
       g_unitIndex = 0;
       return;
     }
