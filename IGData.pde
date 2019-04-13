@@ -44,6 +44,7 @@ void setup() {
 
   strokeWeight(6);
   smooth();
+  textSize(30);
 
   g_commentCount = new ArrayList<Integer>();
   g_likeCount = new ArrayList<Integer>();
@@ -122,16 +123,16 @@ void draw() {
   // I could make a class for this but whatever xd
 
   final float C_DIM = DIM-c.size() * SCALAR;
-  final int C_OFS = 800 - (30);
+  final int C_OFS = 800 - (30 + 60);
   graphBar(c.size(), COMMENT_CLR, C_OFS, C_DIM, "Comments", 200);
 
   final float L_DIM = DIM-l.size() * SCALAR;
-  final int L_OFS = 800 - (30+45+20);
-  graphBar(l.size(), LIKE_CLR, L_OFS, L_DIM, "Likes", 215);
+  final int L_OFS = 800 - (30+45+20 + 60+60);
+  graphBar(l.size(), LIKE_CLR, L_OFS, L_DIM, "Likes", 230);
 
   final float P_DIM = DIM-p.size() * SCALAR;
-  final int P_OFS = 800 - (30+45+20+45+20);
-  graphBar(p.size(), PHOTO_CLR, P_OFS, P_DIM, "Photos", 230);
+  final int P_OFS = 800 - (30+45+20+45+20 + 60+60+60);
+  graphBar(p.size(), PHOTO_CLR, P_OFS, P_DIM, "Photos", 260);
 
 
   lineGraph(g_commentCount, COMMENT_CLR, 300);
