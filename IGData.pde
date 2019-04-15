@@ -34,9 +34,9 @@ final Map<String,String> g_unitFullName = new HashMap<String,String>();
 void setup() {
 
   g_me = new Profile();
-  size(900, 900);
+  size(1200, 900);
   assert height == DIM;
-  assert width == DIM;
+  //assert width == DIM;
 
   //"2019-03-14T09:24:16"
   // Aug 3 2015
